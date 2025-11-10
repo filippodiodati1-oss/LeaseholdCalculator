@@ -1,0 +1,37 @@
+.pill-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: var(--base, #fff);
+  }
+  
+  .pill-logo img {
+    height: 40px;
+  }
+  
+  .pill-items {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .pill-item {
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    background-color: var(--pill-bg, #eee);
+    color: var(--pill-text, #000);
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .pill-item:hover {
+    color: var(--hover-text, #ff9466);
+  }
+  
+  .pill-item.active {
+    background-color: var(--pill-bg-active, #ff9466);
+    color: #fff;
+  }
+  
