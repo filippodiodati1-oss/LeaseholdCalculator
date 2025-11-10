@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/filippodiodati1-oss/LeaseholdCalculator/static/css/main.85611400.css",
+    "main.js": "/filippodiodati1-oss/LeaseholdCalculator/static/js/main.58be9b37.js",
+    "static/js/453.ff5dbe1f.chunk.js": "/filippodiodati1-oss/LeaseholdCalculator/static/js/453.ff5dbe1f.chunk.js",
+    "index.html": "/filippodiodati1-oss/LeaseholdCalculator/index.html",
+    "main.85611400.css.map": "/filippodiodati1-oss/LeaseholdCalculator/static/css/main.85611400.css.map",
+    "main.58be9b37.js.map": "/filippodiodati1-oss/LeaseholdCalculator/static/js/main.58be9b37.js.map",
+    "453.ff5dbe1f.chunk.js.map": "/filippodiodati1-oss/LeaseholdCalculator/static/js/453.ff5dbe1f.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.85611400.css",
+    "static/js/main.58be9b37.js"
+  ]
+}
