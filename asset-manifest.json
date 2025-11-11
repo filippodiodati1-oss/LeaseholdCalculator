@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/LeaseholdCalculator/static/css/main.85611400.css",
-    "main.js": "/LeaseholdCalculator/static/js/main.28116d02.js",
+    "main.js": "/LeaseholdCalculator/static/js/main.ad8acafd.js",
     "static/js/453.ff5dbe1f.chunk.js": "/LeaseholdCalculator/static/js/453.ff5dbe1f.chunk.js",
     "index.html": "/LeaseholdCalculator/index.html",
     "main.85611400.css.map": "/LeaseholdCalculator/static/css/main.85611400.css.map",
-    "main.28116d02.js.map": "/LeaseholdCalculator/static/js/main.28116d02.js.map",
+    "main.ad8acafd.js.map": "/LeaseholdCalculator/static/js/main.ad8acafd.js.map",
     "453.ff5dbe1f.chunk.js.map": "/LeaseholdCalculator/static/js/453.ff5dbe1f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.85611400.css",
-    "static/js/main.28116d02.js"
+    "static/js/main.ad8acafd.js"
   ]
 }
