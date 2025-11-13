@@ -1,6 +1,6 @@
-// src/components/PillNav.tsx
 import React from "react";
-import { Box, Button } from "@mui/material";
+import { Box, Button, IconButton } from "@mui/material";
+import { LightMode, DarkMode } from "@mui/icons-material";
 
 export interface PillNavItem {
   label: string;
@@ -9,59 +9,67 @@ export interface PillNavItem {
 }
 
 interface PillNavProps {
-  logo: string;
-  logoAlt: string;
+  logoLight: string;
+  logoDark: string;
   items: PillNavItem[];
   themeMode?: "light" | "dark";
-  themeToggle?: React.ReactNode;
+  toggleTheme?: () => void;
 }
 
 const PillNav: React.FC<PillNavProps> = ({
-  logo,
-  logoAlt,
+  logoLight,
+  logoDark,
   items,
   themeMode = "light",
-  themeToggle,
+  toggleTheme,
 }) => {
   const textColor = themeMode === "light" ? "#111111" : "#FFFFFF";
+  const logo = themeMode === "light" ? logoLight : logoDark;
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        display: "flex",
-        justifyContent: "center",
-      }}
-    >
-      {/* max width wrapper */}
+    <Box sx={{ width: "100%", display: "flex", justifyContent: "center" }}>
       <Box
         sx={{
           width: "100%",
-          maxWidth: "1440px",
+          maxWidth: 1440,
           display: "flex",
+          flexDirection: { xs: "column", md: "row" }, // stack logo on mobile
           alignItems: "center",
           justifyContent: "space-between",
           px: 2,
           py: 2,
         }}
       >
-        {/* LEFT — Logo */}
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <img src={logo} alt={logoAlt} style={{ height: 40 }} />
-        </Box>
-
-        {/* CENTER — Frosted Pills */}
+        {/* Logo */}
         <Box
           sx={{
             display: "flex",
+            alignItems: "center",
+            mb: { xs: 3, md: 0 }, // more spacing on mobile
+          }}
+        >
+          <Box
+            component="img"
+            src={logo}
+            alt="Company Logo"
+            sx={{ height: { xs: 40, md: 32 } }} // 20% smaller on desktop
+          />
+        </Box>
+
+        {/* Pills + Theme Icon */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
             gap: 1,
-            px: 1, // internal padding between buttons
+            flexWrap: "wrap",
+            px: 1,
             borderRadius: "50px",
             background:
               "linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.06) 100%)",
             backdropFilter: "blur(20px)",
             border: "1px solid rgba(255,255,255,0.10)",
-            py: 0.5, // vertical padding for the container
+            py: 0.5,
           }}
         >
           {items.map((item) => (
@@ -88,10 +96,13 @@ const PillNav: React.FC<PillNavProps> = ({
               {item.label}
             </Button>
           ))}
-        </Box>
 
-        {/* RIGHT — Theme Toggle */}
-        <Box>{themeToggle}</Box>
+          {toggleTheme && (
+            <IconButton onClick={toggleTheme} sx={{ color: textColor }}>
+              {themeMode === "light" ? <DarkMode /> : <LightMode />}
+            </IconButton>
+          )}
+        </Box>
       </Box>
     </Box>
   );

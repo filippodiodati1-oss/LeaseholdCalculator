@@ -4,14 +4,12 @@ import {
   Box,
   Typography,
   TextField,
-  Slider,
   InputAdornment,
   useTheme,
   styled,
   SxProps,
   Theme,
 } from "@mui/material";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 interface CalculatorCardProps {
   remainingLeaseYears: number;
@@ -23,32 +21,19 @@ interface CalculatorCardProps {
   sx?: SxProps<Theme>;
 }
 
-const marks = [
-  { value: 1, label: "1" },
-  { value: 80, label: "80" },
-  { value: 90, label: "90" },
-  { value: 100, label: "100" },
-  { value: 120, label: "120+" },
-];
-
-// Frosted Glass Container (consistent with Results.tsx)
+// Frosted Glass Container
 const FrostedGlassBox = styled(Box)(({ theme }) => {
   const isLight = theme.palette.mode === "light";
-
-  const lightBg = "rgba(255,255,255,0.42)";
-  const darkBg = "rgba(28,28,28,0.28)";
-
-  const lightBorder = "rgba(255,255,255,0.4)";
-  const darkBorder = "rgba(255,255,255,0.05)";
-
   return {
     position: "relative",
     overflow: "hidden",
     isolation: "isolate",
-    backgroundColor: isLight ? lightBg : darkBg,
+    backgroundColor: isLight ? "rgba(255,255,255,0.42)" : "rgba(28,28,28,0.28)",
     padding: theme.spacing(4, 8),
     boxShadow: "none",
-    border: `1.5px solid ${isLight ? lightBorder : darkBorder}`,
+    border: `1.5px solid ${
+      isLight ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.05)"
+    }`,
     borderRadius: theme.spacing(5),
     "&::before": {
       content: '""',
@@ -65,41 +50,13 @@ const FrostedGlassBox = styled(Box)(({ theme }) => {
   };
 });
 
-// Info box consistent with Results.tsx styling
-const InfoBox = styled(Box)(({ theme }) => {
-  const isLight = theme.palette.mode === "light";
-  return {
-    display: "flex",
-    alignItems: "center",
-    padding: theme.spacing(2),
-    backgroundColor: isLight ? "rgba(255,255,255,0.42)" : "rgba(28,28,28,0.28)",
-    borderRadius: theme.spacing(1.5),
-    border: `1px solid ${
-      isLight ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.05)"
-    }`,
-    "& .MuiSvgIcon-root": {
-      marginRight: theme.spacing(2),
-      color: isLight ? "rgba(69,69,69,0.5)" : "#FFFFFF",
-    },
-    "& .MuiTypography-root": {
-      color: isLight ? "#454545" : "rgba(255,255,255,0.7)",
-      fontWeight: 400,
-    },
-    "& .MuiTypography-root strong": {
-      fontWeight: 700,
-      color: isLight ? "#454545" : "#FFFFFF",
-    },
-  };
-});
-
-// TextField consistent with Results.tsx styling
+// Styled TextField
 const StyledTextField = styled(TextField)(({ theme }) => {
   const isLight = theme.palette.mode === "light";
   const bgColor = isLight ? "rgba(255,255,255,0.42)" : "rgba(28,28,28,0.28)";
   const borderColor = isLight
     ? "rgba(255,255,255,0.4)"
     : "rgba(255,255,255,0.05)";
-
   return {
     "& .MuiOutlinedInput-root": {
       backgroundColor: bgColor,
@@ -117,6 +74,7 @@ const StyledTextField = styled(TextField)(({ theme }) => {
     },
     "& .MuiInputBase-input": {
       color: theme.palette.text.primary,
+      textAlign: "left", // ✅ aligned left
       "&::-webkit-outer-spin-button, &::-webkit-inner-spin-button": {
         "-webkit-appearance": "none",
         margin: 0,
@@ -126,7 +84,7 @@ const StyledTextField = styled(TextField)(({ theme }) => {
       },
     },
     "& .MuiInputAdornment-root": {
-      color: theme.palette.text.secondary,
+      color: "rgba(255,255,255,0.5)", // ✅ £ sign with 50% opacity
     },
   };
 });
@@ -145,87 +103,46 @@ const CalculatorCard: React.FC<CalculatorCardProps> = ({
   sx,
 }) => {
   const theme = useTheme();
-  const isLight = theme.palette.mode === "light";
-
-  const baseRadius = 5;
-  const desktopRadius = theme.spacing(baseRadius * 0.8);
-  const mobileRadius = theme.spacing(baseRadius * 0.5);
-
-  const sliderColor = isLight ? "#111111" : "#FFFFFF";
-  const hoverEffectColor = isLight
-    ? "rgba(17,17,17,0.05)"
-    : "rgba(255,255,255,0.1)";
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    setValue: (value: number) => void
-  ) => {
-    const raw = e.target.value.replace(/,/g, "");
-    const num = Number(raw);
-    setValue(num || 0);
-  };
-
-  const handleBlur = (
-    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const raw = e.target.value.replace(/,/g, "");
-    Number(raw); // no state update needed
-  };
 
   return (
     <FrostedGlassBox
       sx={{
         ...sx,
-        borderRadius: { xs: mobileRadius, md: desktopRadius },
+        borderRadius: { xs: theme.spacing(2.5), md: theme.spacing(5) },
         p: { xs: 4, md: 8 },
+        width: { md: "90%" },
+        mx: { md: "auto" },
       }}
     >
-      {/* Lease Years Slider */}
+      {/* Lease Years Input */}
       <Box sx={{ mb: 4 }}>
         <Typography
           sx={{
             fontWeight: 600,
-            fontSize: "24px",
+            fontSize: "18px",
+            mb: "8px",
             color: theme.palette.text.primary,
           }}
         >
-          Lease Years Remaining
+          How many years remain on your lease?
         </Typography>
-        <Typography
-          sx={{
-            fontWeight: 400,
-            fontSize: "16px",
-            color: isLight ? "#454545" : "rgba(255,255,255,0.7)",
-            mb: 2,
+
+        <StyledTextField
+          type="text"
+          value={
+            remainingLeaseYears === 0 ? "" : remainingLeaseYears.toString()
+          }
+          onChange={(e) => {
+            const raw = e.target.value.replace(/,/g, "");
+            if (/^\d*$/.test(raw)) {
+              setRemainingLeaseYears(raw === "" ? 0 : Number(raw));
+            }
           }}
-        >
-          Current years left on your lease
-        </Typography>
-        <Slider
-          value={remainingLeaseYears}
-          onChange={(e, value) => setRemainingLeaseYears(value as number)}
-          step={1}
-          marks={marks}
-          min={1}
-          max={120}
-          valueLabelDisplay="on"
-          sx={{
-            color: sliderColor,
-            "& .MuiSlider-markLabel": {
-              fontSize: "12px",
-              color: isLight ? "#454545" : "rgba(255,255,255,0.7)",
-            },
-            "& .MuiSlider-valueLabel": {
-              backgroundColor: sliderColor,
-              color: isLight ? "#FFFFFF" : "#000000",
-            },
-            "& .MuiSlider-thumb:hover": {
-              boxShadow: `0px 0px 0px 8px ${hoverEffectColor}`,
-            },
-            "& .MuiSlider-thumb.Mui-focusVisible": {
-              boxShadow: `0px 0px 0px 8px ${hoverEffectColor}`,
-            },
+          onBlur={() => {
+            if (remainingLeaseYears < 1) setRemainingLeaseYears(1);
+            if (remainingLeaseYears > 120) setRemainingLeaseYears(120);
           }}
+          fullWidth
         />
       </Box>
 
@@ -234,18 +151,9 @@ const CalculatorCard: React.FC<CalculatorCardProps> = ({
         <Typography
           sx={{
             fontWeight: 600,
-            fontSize: "24px",
+            fontSize: "18px",
+            mb: "8px",
             color: theme.palette.text.primary,
-          }}
-        >
-          Ground Rent
-        </Typography>
-        <Typography
-          sx={{
-            fontWeight: 400,
-            fontSize: "16px",
-            color: isLight ? "#454545" : "rgba(255,255,255,0.7)",
-            mb: 2,
           }}
         >
           How much ground rent do you pay per year?
@@ -254,8 +162,9 @@ const CalculatorCard: React.FC<CalculatorCardProps> = ({
           fullWidth
           variant="outlined"
           value={formatNumber(groundRent)}
-          onChange={(e) => handleChange(e, setGroundRent)}
-          onBlur={handleBlur}
+          onChange={(e) =>
+            setGroundRent(Number(e.target.value.replace(/,/g, "")) || 0)
+          }
           type="text"
           InputProps={{
             startAdornment: <InputAdornment position="start">£</InputAdornment>,
@@ -268,42 +177,26 @@ const CalculatorCard: React.FC<CalculatorCardProps> = ({
         <Typography
           sx={{
             fontWeight: 600,
-            fontSize: "24px",
+            fontSize: "18px",
+            mb: "8px",
             color: theme.palette.text.primary,
           }}
         >
-          Property Value (Forecast)
-        </Typography>
-        <Typography
-          sx={{
-            fontWeight: 400,
-            fontSize: "16px",
-            color: isLight ? "#454545" : "rgba(255,255,255,0.7)",
-            mb: 2,
-          }}
-        >
-          What is the estimated value *after* the lease is extended?
+          What is the estimated property value after the lease is extended?
         </Typography>
         <StyledTextField
           fullWidth
           variant="outlined"
           value={formatNumber(currentValue)}
-          onChange={(e) => handleChange(e, setCurrentValue)}
-          onBlur={handleBlur}
+          onChange={(e) =>
+            setCurrentValue(Number(e.target.value.replace(/,/g, "")) || 0)
+          }
           type="text"
           InputProps={{
             startAdornment: <InputAdornment position="start">£</InputAdornment>,
           }}
         />
       </Box>
-
-      <InfoBox>
-        <InfoOutlinedIcon />
-        <Typography variant="body2">
-          For this simulator, we use a standard **5% deferment rate**, which is
-          the legal standard for flats in England and Wales.
-        </Typography>
-      </InfoBox>
     </FrostedGlassBox>
   );
 };

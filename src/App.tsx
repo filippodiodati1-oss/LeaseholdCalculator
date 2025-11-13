@@ -1,4 +1,3 @@
-// src/App.tsx
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { ThemeProvider, CssBaseline, Box } from "@mui/material";
 import { createAppTheme } from "./theme";
@@ -6,21 +5,24 @@ import { createAppTheme } from "./theme";
 import Hero from "./components/Hero";
 import CalculatorCard from "./components/CalculatorCard";
 import Footer from "./components/Footer";
-import ThemeToggle from "./components/ThemeToggle";
 import Results from "./components/Results";
 import Value from "./components/Value";
 import Money from "./components/Money";
 import Wait from "./components/Wait";
 import Risk from "./components/Risk";
-import Aurora from "./components/Aurora"; // WebGL Aurora Background
+import Aurora from "./components/Aurora";
 import FAQ from "./components/FAQ";
-import PillNav, { PillNavItem } from "./components/PillNav";
+import PillNav from "./components/PillNav";
+import { createPillNavItems } from "./components/PillNavSections";
 
 import { computePremium } from "./lib/computePremium";
 import { getRelativityRate } from "./lib/relativityData";
 
+import logoLight from "./assets/logo-light.svg";
+import logoDark from "./assets/logo-dark.svg";
+
 const App: React.FC = () => {
-  const [mode, setMode] = useState<"light" | "dark">("dark"); // default to dark
+  const [mode, setMode] = useState<"light" | "dark">("dark");
   const theme = useMemo(() => createAppTheme(mode), [mode]);
 
   const [remainingLeaseYears, setRemainingLeaseYears] = useState(70);
@@ -31,18 +33,15 @@ const App: React.FC = () => {
   const calculatorRef = useRef<HTMLDivElement | null>(null);
   const faqRef = useRef<HTMLDivElement | null>(null);
 
-  // Load theme from localStorage
   useEffect(() => {
     const stored = localStorage.getItem("theme") as "light" | "dark" | null;
     if (stored) setMode(stored);
   }, []);
 
-  // Save theme
   useEffect(() => {
     localStorage.setItem("theme", mode);
   }, [mode]);
 
-  // Premium calculation
   const results = useMemo(() => {
     const relativity = getRelativityRate(remainingLeaseYears);
     return computePremium({
@@ -57,21 +56,12 @@ const App: React.FC = () => {
   const currentLeaseValue = Math.round(
     currentValue * getRelativityRate(remainingLeaseYears)
   );
-
   const afterExtensionValue = Math.round(currentValue);
 
-  // Scroll helper
-  const scrollTo = (ref: React.RefObject<HTMLDivElement | null>) => {
-    if (ref.current) {
-      ref.current.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
-  // Middle pill items only
-  const pillItems: PillNavItem[] = [
-    { label: "Calculator", onClick: () => scrollTo(calculatorRef) },
-    { label: "FAQ", onClick: () => scrollTo(faqRef) },
-  ];
+  const pillItems = createPillNavItems({
+    calculatorRef,
+    faqRef,
+  });
 
   return (
     <ThemeProvider theme={theme}>
@@ -99,13 +89,11 @@ const App: React.FC = () => {
 
       {/* PillNav */}
       <PillNav
-        logo={
-          mode === "light" ? "/assets/logo-light.svg" : "/assets/logo-dark.svg"
-        }
-        logoAlt="Company Logo"
+        logoLight={logoLight}
+        logoDark={logoDark}
         items={pillItems}
         themeMode={mode}
-        themeToggle={<ThemeToggle theme={mode} setTheme={setMode} />}
+        toggleTheme={() => setMode(mode === "light" ? "dark" : "light")}
       />
 
       {/* Main Layout */}
@@ -126,50 +114,40 @@ const App: React.FC = () => {
           sx={{
             display: "flex",
             flexDirection: { xs: "column", md: "row" },
-            gap: 6,
+            gap: { xs: 2, md: 6 },
             maxWidth: 1440,
             mx: "auto",
             width: "100%",
           }}
         >
-          {/* LEFT COLUMN – Calculator */}
           <Box
             sx={{ flexBasis: { xs: "100%", md: "40%" } }}
             ref={calculatorRef}
           >
-            <Box
-              sx={{
-                position: { xs: "static", md: "sticky" },
-                top: { md: 120 },
-              }}
-            >
-              <CalculatorCard
-                remainingLeaseYears={remainingLeaseYears}
-                setRemainingLeaseYears={setRemainingLeaseYears}
-                groundRent={groundRent}
-                setGroundRent={setGroundRent}
-                currentValue={currentValue}
-                setCurrentValue={setCurrentValue}
-              />
-            </Box>
+            <CalculatorCard
+              remainingLeaseYears={remainingLeaseYears}
+              setRemainingLeaseYears={setRemainingLeaseYears}
+              groundRent={groundRent}
+              setGroundRent={setGroundRent}
+              currentValue={currentValue}
+              setCurrentValue={setCurrentValue}
+            />
           </Box>
 
-          {/* RIGHT COLUMN – Results */}
           <Box
             sx={{
               flexBasis: { xs: "100%", md: "60%" },
               display: "flex",
               flexDirection: "column",
-              gap: 4,
+              gap: { xs: 2, md: 4 },
             }}
           >
             <Results results={{ total: results.total }} />
-
             <Box
               sx={{
                 display: "flex",
                 flexDirection: { xs: "column", md: "row" },
-                gap: 4,
+                gap: { xs: 2, md: 4 },
               }}
             >
               <Value
@@ -192,7 +170,7 @@ const App: React.FC = () => {
               sx={{
                 display: "flex",
                 flexDirection: { xs: "column", md: "row" },
-                gap: 4,
+                gap: { xs: 2, md: 4 },
               }}
             >
               <Wait
@@ -201,19 +179,21 @@ const App: React.FC = () => {
                 annualGroundRent={groundRent}
                 defermentRatePct={standardDefermentRate}
                 relativityRate={getRelativityRate(remainingLeaseYears)}
-                sx={{ flexBasis: { md: "50%" } }}
+                sx={{ flexBasis: { md: "50%" }, mt: 0, mb: 0 }}
               />
-              <Risk sx={{ flexBasis: { md: "50%" } }} />
+              <Risk
+                remainingLeaseYears={remainingLeaseYears}
+                totalPremium={results.total}
+                sx={{ flexBasis: { md: "50%" }, mt: 0, mb: 0 }}
+              />
             </Box>
           </Box>
         </Box>
 
-        {/* FAQ */}
         <Box ref={faqRef} sx={{ mb: 16 }}>
           <FAQ />
         </Box>
 
-        {/* Footer */}
         <Footer themeMode={mode} />
       </Box>
     </ThemeProvider>

@@ -68,7 +68,6 @@ const Wait: React.FC<WaitProps> = ({
   const theme = useTheme();
   const isLight = theme.palette.mode === "light";
 
-  // 🎨 SAME divider color logic as Value.tsx
   const dividerColor = isLight ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.2)";
 
   const estimates = remainingYearsArray.map((years) => {
@@ -79,11 +78,11 @@ const Wait: React.FC<WaitProps> = ({
       defermentRatePct,
       relativityRate,
     });
-    return Math.round(premium.total * 1.025); // include inflation
+    return Math.round(premium.total * 1.025);
   });
 
   return (
-    <FrostedGlassBox sx={{ mt: 4, mb: 6, ...sx }}>
+    <FrostedGlassBox sx={{ ...sx }}>
       <Typography
         sx={{
           fontWeight: 600,
@@ -119,7 +118,7 @@ const Wait: React.FC<WaitProps> = ({
                     borderBottom:
                       index === remainingYearsArray.length - 1
                         ? "none"
-                        : `1px solid ${dividerColor}`, // ✅ inherits style
+                        : `1px solid ${dividerColor}`,
                     padding: 0,
                     paddingRight: "16px",
                     height: "56px",
@@ -136,7 +135,7 @@ const Wait: React.FC<WaitProps> = ({
                     borderBottom:
                       index === remainingYearsArray.length - 1
                         ? "none"
-                        : `1px solid ${dividerColor}`, // ✅ consistent
+                        : `1px solid ${dividerColor}`,
                     padding: 0,
                     paddingLeft: "16px",
                     height: "56px",

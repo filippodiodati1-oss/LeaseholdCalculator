@@ -1,6 +1,8 @@
 // src/components/Footer.tsx
 import React from "react";
 import { Box, Typography } from "@mui/material";
+import logoLight from "../assets/logo-light.svg";
+import logoDark from "../assets/logo-dark.svg";
 
 interface FooterProps {
   themeMode: "light" | "dark";
@@ -14,10 +16,10 @@ const Footer: React.FC<FooterProps> = ({ themeMode }) => {
       component="footer"
       sx={{
         width: "100%",
-        pt: 6, // increased top padding
+        pt: 6,
         pb: 3,
         px: { xs: 2, md: 4 },
-        background: "transparent", // remove frost
+        background: "transparent",
         borderTop: "3px solid transparent",
         borderImage:
           "linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.2), rgba(255,255,255,0)) 1",
@@ -37,7 +39,7 @@ const Footer: React.FC<FooterProps> = ({ themeMode }) => {
         {/* LEFT: Logo */}
         <Box>
           <img
-            src={isLight ? "/assets/logo-light.svg" : "/assets/logo-dark.svg"}
+            src={isLight ? logoLight : logoDark}
             alt="Company Logo"
             style={{ height: 40 }}
           />

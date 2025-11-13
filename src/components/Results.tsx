@@ -1,13 +1,14 @@
-import React, { useRef, useEffect, useState } from "react";
+// src/components/Results.tsx
+import React, { useRef } from "react";
 import {
   Box,
   Typography,
   useTheme,
-  useMediaQuery,
   styled,
   SxProps,
   Theme,
 } from "@mui/material";
+import CountUp from "./CountUp";
 
 interface ResultsProps {
   results: {
@@ -16,68 +17,59 @@ interface ResultsProps {
   sx?: SxProps<Theme>;
 }
 
-// Safe number formatting
-const formatNumber = (num?: number) => {
-  if (typeof num !== "number" || !Number.isFinite(num)) return "£0";
-  const roundedNum = Math.round(num);
-  return "£" + roundedNum.toLocaleString("en-GB");
-};
-
-// Styled Box with frosted glass effect (static styles)
+// Frosted Glass Box
 const FrostedGlassBox = styled(Box)(({ theme }) => {
   const isLight = theme.palette.mode === "light";
-
   return {
     position: "relative",
     overflow: "hidden",
     isolation: "isolate",
     padding: theme.spacing(2, 6),
-    backgroundColor: isLight ? "rgba(255,255,255,0.42)" : "rgba(28,28,28,0.28)", // UPDATED: dark mode opacity 28%
+    backgroundColor: isLight ? "rgba(255,255,255,0.42)" : "rgba(28,28,28,0.28)",
     border: `1px solid ${
       isLight ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.05)"
     }`,
+    borderRadius: theme.spacing(5),
     backdropFilter: "blur(12px)",
     WebkitBackdropFilter: "blur(12px)",
     boxShadow: "none",
   };
 });
 
+// Function to get subtitle based on the total amount
+const getSubtitle = (total: number) => {
+  if (total <= 15000) {
+    return [
+      "Extending your lease today will cost enough to buy your dignity…if sold in tiny installments.",
+    ];
+  }
+  if (total <= 30000) {
+    return [
+      "Extending your lease today will cost enough to rent a tiny island…with no neighbors.",
+    ];
+  }
+  if (total <= 60000) {
+    return [
+      "Extending your lease today will cost enough to cover adulting…times a few extra zeros.",
+    ];
+  }
+  if (total <= 90000) {
+    return [
+      "Extending your lease today will cost enough to buy your entire dignity…plus interest.",
+    ];
+  }
+  return [
+    "Extending your lease today will cost enough to make you question why money can’t just grow on trees.",
+  ];
+};
+
 const Results: React.FC<ResultsProps> = ({ results, sx }) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const containerRef = useRef<HTMLDivElement>(null);
   const isLight = theme.palette.mode === "light";
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
-  const [fontSize, setFontSize] = useState<number>(isMobile ? 40 : 64);
-
-  useEffect(() => {
-    const adjustFont = () => {
-      if (!containerRef.current || !textRef.current) return;
-
-      const containerWidth = containerRef.current.offsetWidth;
-      const containerHeight = containerRef.current.offsetHeight;
-      const textEl = textRef.current;
-
-      let newFontSize = isMobile ? 40 : 64;
-      textEl.style.fontSize = `${newFontSize}px`;
-
-      while (
-        (textEl.scrollWidth > containerWidth ||
-          textEl.scrollHeight > containerHeight) &&
-        newFontSize > 12
-      ) {
-        newFontSize -= 1;
-        textEl.style.fontSize = `${newFontSize}px`;
-      }
-
-      setFontSize(newFontSize);
-    };
-
-    adjustFont();
-    window.addEventListener("resize", adjustFont);
-    return () => window.removeEventListener("resize", adjustFont);
-  }, [results, isMobile]);
+  const total = results.total || 0;
+  const subtitleLines = getSubtitle(total);
 
   return (
     <FrostedGlassBox
@@ -85,41 +77,65 @@ const Results: React.FC<ResultsProps> = ({ results, sx }) => {
       sx={{
         ...sx,
         display: "flex",
-        flexDirection: "column",
-        gap: 2,
+        flexDirection: { xs: "column", md: "row" }, // horizontal on desktop
+        gap: 4,
         width: "100%",
         height: { xs: "auto", md: 200 },
-        justifyContent: "center",
-        borderRadius: { xs: theme.spacing(2.5), md: theme.spacing(5) }, // half radius on mobile
+        justifyContent: "space-between",
+        alignItems: { xs: "flex-start", md: "center" },
+        borderRadius: { xs: theme.spacing(2.5), md: theme.spacing(5) },
       }}
     >
-      <Box ref={textRef}>
+      {/* Total number */}
+      <Box sx={{ flexBasis: { xs: "100%", md: "40%" } }}>
         <Typography
           sx={{
             fontWeight: 800,
             color: theme.palette.text.primary,
-            fontSize: `${fontSize}px`,
+            fontSize: { xs: 40, md: 64 },
             lineHeight: 1.2,
+            display: "inline-flex",
+            alignItems: "baseline",
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            transition: "font-size 0.1s ease",
           }}
         >
-          {formatNumber(results.total)}
+          <span
+            style={{
+              color: "rgba(255,255,255,0.5)",
+              fontSize: "0.6em",
+              marginRight: "4px",
+            }}
+          >
+            £
+          </span>
+          <CountUp
+            from={0}
+            to={total}
+            separator=","
+            duration={0.5}
+            quick={true}
+            className="count-up-text"
+          />
         </Typography>
       </Box>
 
-      <Typography
-        sx={{
-          fontWeight: 400,
-          fontSize: { xs: "16px", md: "16px" },
-          color: isLight ? "#454545" : "rgba(255,255,255,0.7)", // subtitle
-        }}
-      >
-        Estimated lease extension cost today, based on your property value,
-        lease length, and ground rent.
-      </Typography>
+      {/* Subtitle */}
+      <Box sx={{ flexBasis: { xs: "100%", md: "60%" } }}>
+        {subtitleLines.map((line, index) => (
+          <Typography
+            key={index}
+            sx={{
+              fontWeight: 400,
+              fontSize: { xs: "16px", md: "16px" },
+              color: isLight ? "#454545" : "rgba(255,255,255,0.7)",
+            }}
+          >
+            {line}
+          </Typography>
+        ))}
+      </Box>
     </FrostedGlassBox>
   );
 };
