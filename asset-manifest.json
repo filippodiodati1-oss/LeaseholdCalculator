@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/LeaseholdCalculator/static/css/main.85611400.css",
-    "main.js": "/LeaseholdCalculator/static/js/main.2b78a0a9.js",
+    "main.js": "/LeaseholdCalculator/static/js/main.6b087d38.js",
     "static/js/453.ff5dbe1f.chunk.js": "/LeaseholdCalculator/static/js/453.ff5dbe1f.chunk.js",
     "index.html": "/LeaseholdCalculator/index.html",
-    "static/media/logo-light.svg": "/LeaseholdCalculator/static/media/logo-light.6269bd05f2c4146d7a01505fe5eebfcd.svg",
-    "static/media/logo-dark.svg": "/LeaseholdCalculator/static/media/logo-dark.f02ad5a12679513965b39a559c089b6b.svg",
+    "static/media/logo-light.svg": "/LeaseholdCalculator/static/media/logo-light.94faed61ebf469e7880680988fb691eb.svg",
+    "static/media/logo-dark.svg": "/LeaseholdCalculator/static/media/logo-dark.dd532aa956720f320d2ed508d1df3e3c.svg",
     "main.85611400.css.map": "/LeaseholdCalculator/static/css/main.85611400.css.map",
-    "main.2b78a0a9.js.map": "/LeaseholdCalculator/static/js/main.2b78a0a9.js.map",
+    "main.6b087d38.js.map": "/LeaseholdCalculator/static/js/main.6b087d38.js.map",
     "453.ff5dbe1f.chunk.js.map": "/LeaseholdCalculator/static/js/453.ff5dbe1f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.85611400.css",
-    "static/js/main.2b78a0a9.js"
+    "static/js/main.6b087d38.js"
   ]
 }
